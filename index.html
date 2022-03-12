@@ -39,25 +39,21 @@ let player_speed = 2;
 let player_x = 32;
 let player_y = 64;
 
-let car1_img;
-let car2_img;
-let car3_img;
-let car4_img;
+let bullet;
 
-let car1_speed = 2;
-let car2_speed = 1.25;
-let car3_speed = 0.75;
-let car4_speed = 1;
+let marciano1_img;
+let marciano2_img;
+
+let marciano1_speed = 2;
+let marciano2_speed = 2;
 
 let road1_y = 160;
 let road2_y = 224;
-let road3_y = 380;
-let road4_y = 460;
 
 let road_offset_y = 96;
 
 let offset_x = -128;
-let scale_size = 3;
+let scale_size = 2;
 
 let lives = 3;
 let score = 0;
@@ -74,32 +70,20 @@ function reset ()
 	player_img.x = player_x;
 	player_img.y = player_y;
 
-	car1_img.x = game_w-offset_x;
-	car1_img.y = road1_y;
+	marciano1_img.x = game_w-offset_x;
+	marciano1_img.y = road1_y;
 
-	car2_img.x = game_w-offset_x
-	car2_img.y = road2_y;
-
-	car3_img.x = offset_x
-	car3_img.y = road3_y;
-
-	car4_img.x = offset_x
-	car4_img.y = road4_y;
-
-
+	marciano2_img.x = game_w-offset_x
+	marciano2_img.y = road2_y;
 }
-
 
 function preload ()
 {
 	this.load.image("background", "background.png");
-	this.load.image("woman", "woman.png");
-	this.load.image("car1", "police.png");
-	this.load.image("car2", "ambulance.png");
-	this.load.image("car3", "truck.png");
-	this.load.image("car4", "sedan_vintage.png");
+	this.load.image("ship", "ship.png");
+	this.load.image("marciano1", "marciano.png");
+	this.load.image("marciano2", "marciano.png");
 }
-
 
 function create ()
 {
@@ -107,42 +91,31 @@ function create ()
 
 	bg_img = this.add.image(game_w/2,game_h/2, "background");
 
-	player_img = this.add.image(player_x, player_y, "woman");
+	player_img = this.add.image(player_x, player_y, "ship");
 	this.physics.add.existing(player_img, false);
 
-
-	car1_img = this.add.image(game_w-offset_x, road1_y, "car1");
-	this.physics.add.existing(car1_img, false);
-	car2_img = this.add.image(game_w-offset_x, road2_y, "car2");
-	this.physics.add.existing(car2_img, false);
-	car3_img = this.add.image(offset_x, road3_y, "car3");
-	this.physics.add.existing(car3_img, false);
-	car4_img = this.add.image(offset_x, road4_y, "car4");
-	this.physics.add.existing(car4_img, false);
+	marciano1_img = this.add.image(game_w-offset_x, road1_y, "marciano1");
+	this.physics.add.existing(marciano1_img, false);
+	marciano2_img = this.add.image(game_w-offset_x, road2_y, "marciano2");
+	this.physics.add.existing(marciano2_img, false);
 
 	player_img.setScale(scale_size);
 
-	car1_img.setScale(scale_size);
-	car1_img.flipX = true;
-	car2_img.setScale(scale_size);
-	car2_img.flipX = true;
+	marciano1_img.setScale(scale_size);
+	marciano1_img.flipX = true;
+	marciano2_img.setScale(scale_size);
+	marciano2_img.flipX = true;
 
-	car3_img.setScale(scale_size);
-	car4_img.setScale(scale_size);
+	let marc = [marciano1_img, marciano2_img];
 
-
-	let cars = [car1_img, car2_img, car3_img, car4_img];
-
-	for (let i = 0; i < cars.length; i++){
-		this.physics.add.collider(player_img, cars[i], function (player, car){
+	for (let i = 0; i < marc.length; i++){
+		this.physics.add.collider(player_img, marc[i], function (player, marc){
 			reset();
 
 			lives--;
 			lives_txt.text = lives.toString();
 		});
 	}
-
-
 
 	this.add.text(game_w/2, 64, "VIDAS");
 	lives_txt = this.add.text(game_w/2+64, 64, "3");
@@ -153,7 +126,6 @@ function create ()
 
 }
 
-
 function update ()
 {
 	if (cursors.up.isDown){
@@ -162,16 +134,15 @@ function update ()
 	else if (cursors.down.isDown){
 		player_img.y += player_speed;		
 	}
+	if (cursors.space.isDown){
+	
+	}	
 
-	car1_img.x -= car1_speed;
-	car2_img.x -= car2_speed;
-	car3_img.x += car3_speed;
-	car4_img.x += car4_speed;
+	marciano1_img.x -= marciano1_speed;
+	marciano2_img.x -= marciano2_speed;
 
-	check_car(car1_img);
-	check_car(car2_img);
-	check_car(car3_img);
-	check_car(car4_img);
+	check_mar(marciano1_img);
+	check_mar(marciano2_img);
 
 	if (player_img.y > game_h - road_offset_y)
 		crossing = true;
@@ -182,14 +153,13 @@ function update ()
 	}
 }
 
-function check_car (car)
+function check_mar (mar)
 {
-	if (car.flipX && car.x < offset_x)
-		car.x = game_w-offset_x;
-	else if (!car.flipX && car.x > game_w-offset_x)
-		car.x = offset_x;
+	if (mar.flipX && mar.x < offset_x)
+		mar.x = game_w-offset_x;
+	else if (!mar.flipX && mar.x > game_w-offset_x)
+		mar.x = offset_x;
 }
-
 
 </script>
 </body>
