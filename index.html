@@ -66,8 +66,6 @@ let crossing = false;
 
 function reset ()
 {
-	crossing = false;
-
 	player_img.x = player_x;
 	player_img.y = player_y;
 
@@ -149,14 +147,6 @@ function update ()
 
 	check_mar(marciano1_img);
 	check_mar(marciano2_img);
-
-	if (player_img.y > game_h - road_offset_y)
-		crossing = true;
-	else if (player_img.y <= road_offset_y && crossing){
-		crossing = false;
-		score++;
-		score_txt.text = score.toString();
-	}
 }
 
 function check_mar (mar)
