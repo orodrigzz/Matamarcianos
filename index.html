@@ -40,7 +40,7 @@ let player_x = 50;
 let player_y = game_h/2;
 
 let bullet_img;
-let bullet_speed= 2;
+let bullet_speed = 2;
 
 let marciano1_img;
 let marciano2_img;
@@ -72,8 +72,11 @@ function reset ()
 	marciano1_img.x = game_w-offset_x;
 	marciano1_img.y = road1_y;
 
-	marciano2_img.x = game_w-offset_x
+	marciano2_img.x = game_w-offset_x;
 	marciano2_img.y = road2_y;
+
+	bullet_img.y = game_w+500;
+	bullet_img.x = road2_y+500;
 }
 
 function preload ()
@@ -121,6 +124,19 @@ function create ()
 		});
 	}
 
+	for (let i = 0; i < marc.length; i++){
+       this.physics.add.collider(marc[i], bullet_img, function (bullet, marc){
+		marciano1_img.x = game_w-offset_x;
+		marciano1_img.y = road1_y;
+
+		marciano2_img.x = game_w-offset_x
+		marciano2_img.y = road2_y;
+
+		score++;
+		score_txt.text = score.toString();
+         });
+    }
+
 	this.add.text(game_w/2, 64, "VIDAS");
 	lives_txt = this.add.text(game_w/2+64, 64, "3");
 	
@@ -139,22 +155,45 @@ function update ()
 	else if (cursors.space.isDown){
 		bullet_img.y = player_img.y;
 		bullet_img.x = player_img.x;
-		bullet_img.y += bullet_speed;
+		bullet_img.x += bullet_speed;
 	}	
 
 	marciano1_img.x -= marciano1_speed;
 	marciano2_img.x -= marciano2_speed;
 
-	check_mar(marciano1_img);
-	check_mar(marciano2_img);
+	if (marciano1_img.flipX && marciano1_img.x < offset_x){
+      	marciano1_img.x = game_w-offset_x;
+		lives--;
+		lives_txt.text = lives.toString();
+	}
+   else if (!marciano1_img.flipX && marciano1_img.x > game_w-offset_x){
+      	marciano1_img.x = offset_x;
+		lives--;
+		lives_txt.text = lives.toString();
+	}
+    if (marciano2_img.flipX && marciano2_img.x < offset_x){
+      	marciano2_img.x = game_w-offset_x;
+		lives--;
+		lives_txt.text = lives.toString();
+	}
+   else if (!marciano2_img.flipX && marciano2_img.x > game_w-offset_x){
+    	marciano2_img.x = offset_x;
+		lives--;
+		lives_txt.text = lives.toString();
+	}
+	if (lives < 0){
+		player_img.x = game_w-offset_x;
+		player_img.y = road1_y;
+
+		marciano1_img.x = game_w-offset_x;
+		marciano1_img.y = road1_y;
+
+		marciano2_img.x = game_w-offset_x
+		marciano2_img.y = road2_y;
+
+		this.add.text(game_w/2, game_h/2, "GAME OVER");
 }
 
-function check_mar (mar)
-{
-	if (mar.flipX && mar.x < offset_x)
-		mar.x = game_w-offset_x;
-	else if (!mar.flipX && mar.x > game_w-offset_x)
-		mar.x = offset_x;
 }
 
 </script>
